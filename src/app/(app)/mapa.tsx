@@ -1,7 +1,7 @@
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import MapView, { Marker, Region } from 'react-native-maps';
+import MapView, { Callout, Marker, Region } from 'react-native-maps';
 import { useAuth } from '../../hooks/useAuth';
 import { usePonto } from '../../hooks/usePonto';
 import { Ponto } from '../../lib/validations/ponto';
@@ -27,7 +27,6 @@ export default function Mapa() {
                 if (!user) return;
                 const lista = await listar(user.id);
                 setPontos(lista);
-
                 if (lista.length > 0) {
                     const novaRegion: Region = {
                         latitude: lista[0].latitude,
@@ -56,12 +55,28 @@ export default function Mapa() {
                     <Marker
                         key={ponto.id}
                         coordinate={{ latitude: ponto.latitude, longitude: ponto.longitude }}
-                        title={new Date(ponto.timestamp).toLocaleTimeString('pt-BR')}
-                        description={ponto.endereco ?? `${ponto.latitude.toFixed(5)}, ${ponto.longitude.toFixed(5)}`}
                         pinColor="#2563EB"
-                    />
+                    >
+                        <Callout tooltip={false}>
+                            <View style={styles.callout}>
+                                <Text style={styles.calloutHora}>
+                                    {new Date(ponto.timestamp).toLocaleTimeString('pt-BR')}
+                                </Text>
+                                <Text style={styles.calloutData}>
+                                    {new Date(ponto.timestamp).toLocaleDateString('pt-BR')}
+                                </Text>
+                                {ponto.endereco ? (
+                                    <Text style={styles.calloutEndereco}>{ponto.endereco}</Text>
+                                ) : null}
+                                <Text style={styles.calloutCoords}>
+                                    {ponto.latitude.toFixed(5)}, {ponto.longitude.toFixed(5)}
+                                </Text>
+                            </View>
+                        </Callout>
+                    </Marker>
                 ))}
             </MapView>
+
             {pontos.length === 0 && (
                 <View style={styles.semPontos}>
                     <Text style={styles.semPontosTexto}>Nenhum ponto registrado ainda.</Text>
@@ -78,6 +93,32 @@ const styles = StyleSheet.create({
     mapa: {
         width: '100%',
         height: '100%',
+    },
+    callout: {
+        minWidth: 200,
+        maxWidth: 280,
+        padding: 12,
+    },
+    calloutHora: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#111827',
+    },
+    calloutData: {
+        fontSize: 12,
+        color: '#6B7280',
+        marginTop: 2,
+    },
+    calloutEndereco: {
+        fontSize: 13,
+        color: '#374151',
+        marginTop: 6,
+        lineHeight: 18,
+    },
+    calloutCoords: {
+        fontSize: 11,
+        color: '#9CA3AF',
+        marginTop: 4,
     },
     semPontos: {
         position: 'absolute',

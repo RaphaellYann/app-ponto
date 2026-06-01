@@ -63,10 +63,13 @@ export default function Registros() {
                 renderItem={({ item }) => (
                     <View style={styles.card}>
                         <Text style={styles.cardHora}>
-                            {new Date(item.timestamp).toLocaleTimeString('pt-BR')}
+                            {new Date(item.timestamp).toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo' })}
                         </Text>
+                        {item.endereco ? (
+                            <Text style={styles.cardEndereco}>{item.endereco}</Text>
+                        ) : null}
                         <Text style={styles.cardCoords}>
-                            Lat: {item.latitude.toFixed(5)} | Lng: {item.longitude.toFixed(5)}
+                            {item.latitude.toFixed(5)}, {item.longitude.toFixed(5)}
                         </Text>
                     </View>
                 )}
@@ -124,9 +127,15 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#111827',
     },
+    cardEndereco: {
+        fontSize: 13,
+        color: '#374151',
+        marginTop: 6,
+        lineHeight: 18,
+    },
     cardCoords: {
-        fontSize: 12,
-        color: '#6B7280',
+        fontSize: 11,
+        color: '#9CA3AF',
         marginTop: 4,
     },
     vazio: {

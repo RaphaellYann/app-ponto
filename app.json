@@ -17,7 +17,13 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.raphaellyann.appponto",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCrsnv0o1asm72wVITeAAVF5F_Ooutc4wg"
+        }
+      }
     },
     "web": {
       "output": "static",
@@ -35,11 +41,23 @@
           }
         }
       ],
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      [
+        "react-native-maps",
+        {
+          "androidApiKey": "AIzaSyCrsnv0o1asm72wVITeAAVF5F_Ooutc4wg"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "fb82575b-bff6-40ac-bc7d-ff6286b7acce"
+      }
     }
   }
 }

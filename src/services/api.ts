@@ -14,14 +14,12 @@ export const authApi = {
         await dbService.session.save(user);
         return user;
     },
-
     async cadastro(data: CadastroData): Promise<User> {
         const { confirmarSenha, ...userData } = data;
         const newUser: User = { ...userData, id: Crypto.randomUUID() };
         await dbService.users.insert(newUser);
         return newUser;
     },
-
     async logout(): Promise<void> {
         await dbService.session.clear();
     },
@@ -41,7 +39,6 @@ export const pontoApi = {
         await dbService.pontos.insert(ponto);
         return ponto;
     },
-
     async listar(userId: string): Promise<Ponto[]> {
         return dbService.pontos.getByUserId(userId);
     },

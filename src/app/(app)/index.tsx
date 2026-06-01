@@ -7,6 +7,8 @@ import { useLocation } from '../../hooks/useLocation';
 import { usePonto } from '../../hooks/usePonto';
 import { User } from '../../lib/validations/auth';
 
+const FUSO = { timeZone: 'America/Sao_Paulo' } as const;
+
 export default function BaterPonto() {
     const router = useRouter();
     const { getSessao, logout } = useAuth();
@@ -14,9 +16,15 @@ export default function BaterPonto() {
     const { registrar } = usePonto();
     const [user, setUser] = useState<User | null>(null);
     const [registrando, setRegistrando] = useState(false);
+    const [agora, setAgora] = useState(new Date());
 
     useEffect(() => {
         getSessao().then(setUser);
+    }, []);
+
+    useEffect(() => {
+        const intervalo = setInterval(() => setAgora(new Date()), 1000);
+        return () => clearInterval(intervalo);
     }, []);
 
     const handleBaterPonto = async () => {
@@ -25,7 +33,7 @@ export default function BaterPonto() {
         try {
             const { latitude, longitude } = await solicitarLocalizacao();
             await registrar(user.id, latitude, longitude);
-            Alert.alert('Ponto registrado!', `Às ${new Date().toLocaleTimeString('pt-BR')}`);
+            Alert.alert('Ponto registrado!', `Às ${new Date().toLocaleTimeString('pt-BR', FUSO)}`);
         } catch (error: any) {
             Alert.alert('Erro', error.message);
         } finally {
@@ -51,8 +59,12 @@ export default function BaterPonto() {
             </View>
 
             <View style={styles.relogio}>
-                <Text style={styles.hora}>{new Date().toLocaleTimeString('pt-BR')}</Text>
-                <Text style={styles.data}>{new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' })}</Text>
+                <Text style={styles.hora}>
+                    {agora.toLocaleTimeString('pt-BR', FUSO)}
+                </Text>
+                <Text style={styles.data}>
+                    {agora.toLocaleDateString('pt-BR', { ...FUSO, weekday: 'long', day: '2-digit', month: 'long' })}
+                </Text>
             </View>
 
             <TouchableOpacity
